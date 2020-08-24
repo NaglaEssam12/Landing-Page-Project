@@ -23,6 +23,7 @@
 let sectionElements=[]; 
 let activeTest = 0;
 let i = 0;
+let index = 0;
 let testArr = [0 , 0 , 0 , 0];    //this array to know which section have been clicked.
 let scrollArr = [0 , 0 , 0 , 0];  //this array to know which section have been scrolled to.
 var arr=[];                       //this array to know the top and bottom of every section.
@@ -39,18 +40,7 @@ sectionElements.push(document.querySelector('#section4'));
  * Start Helper Functions
  * 
 */
-//To know the top and bottom of every section.
-function myFunction(section) {
-  var arr =[];
-  var div = document.getElementById(section);
-  var rect = div.getBoundingClientRect();
-  x = rect.bottom;
-  y = rect.top;
-  l = rect.left;
-  arr.push(x);
-  arr.push(y);
-  return arr;
-}
+
 
 
 /**
@@ -65,26 +55,7 @@ for(let i = 0 ; i < sectionElements.length ;i++)
         const newItem = document.createElement('li');
         const unorderedList = document.querySelector('#navbar__list');
         unorderedList.appendChild(newItem);
-       
-        if(i === 0)
-            {
-                 newItem.innerHTML ='<a class="menu__link" href="#section1">Section 1</a>';
-                
-                 
-            }
-        else if(i === 1)
-            {
-                 newItem.innerHTML ='<a class="menu__link" href="#section2">Section 2</a>';
-            }
-        else if(i === 2)
-            {
-                 newItem.innerHTML ='<a class="menu__link" href="#section3">Section 3</a>';
-            }
-        else
-            {
-                 newItem.innerHTML ='<a class="menu__link" href="#section4">Section 4</a>';
-                 
-            }
+        newItem.innerHTML = '<a class="menu__link" href="#section' + (i+1) + '">Section ' + (i+1) +  '</a>';
     }
 
 //To carry All list Items that we have created.
@@ -95,53 +66,30 @@ const listItems = document.querySelectorAll('li');
 // Scroll to anchor ID using scrollTO event
 
 
+    
 window.addEventListener('scroll',function(){
-       let index = 0;
-       arr = myFunction("section1") ;
+      for(let i = 0 ; i < sectionElements.length ; i++)
+          {
+              var mySection = document.querySelector('#section' + (i+1));
+              //I used getBoundingClientRect() to deteremine the top of each section.
+             if(mySection.getBoundingClientRect().top < window.innerHeight)
+                {
+                    index = i;
+                    listItems[i].firstChild.classList.add('your-active-class');
+                    scrollArr[i] = (i + 1);
+
+                }         
+          }
+    //This loop to remove non active section
     for(let j = 0 ; j < sectionElements.length ;j++)
         {
-            
             if(j !== index && scrollArr[j] !== 0)
                 {
                     listItems[j].firstChild.classList.remove('your-active-class'); 
                    scrollArr[j] = 0;
                 }
-            if(scrollArr[j] !== 0)
-            {
-                   listItems[j].firstChild.classList.remove('your-active-class'); 
-                
-            }
         }
-    //First Section
-    if(Math.abs(arr[0]) <1030 &&Math.abs(arr[0]) >= window.innerHeight && Math.abs(arr[1])<= window.innerHeight )
-       {
-          
-           listItems[0].firstChild.classList.toggle('your-active-class');
-           scrollArr[0] = 1;
-           index = 0;
-           
-       }
-    //Second Section
-      else if(Math.abs(arr[0]) <= window.innerHeight && Math.abs(arr[1])<= window.innerHeight )
-       {
-           listItems[1].firstChild.classList.toggle('your-active-class');
-           scrollArr[1] = 2;
-           index = 1;
-       }
-    //Third Section
-    else if(Math.abs(arr[0]) <= window.innerHeight && Math.abs(arr[1])>= window.innerHeight )
-       {
-           listItems[2].firstChild.classList.toggle('your-active-class');
-           scrollArr[2] = 3;
-           index = 2;
-       }
-    //Last Section
-    else if(Math.abs(arr[0]) >= window.innerHeight && Math.abs(arr[1])>= window.innerHeight )
-        {
-           listItems[3].firstChild.classList.toggle('your-active-class');
-            scrollArr[3] = 4;
-            index = 3;
-        }
+    
 });
 
 
@@ -172,7 +120,7 @@ function clickItem(item , element , index)
         //This loop to know which section has been clicked before to make it not active.  
     for(let j = 0 ; j < sectionElements.length ;j++)
         {
-            console.log(testArr);
+           // console.log(testArr);
             if(j !== index && testArr[j] !== 0)
                 {
                    sectionElements[j].classList.remove('active'); 
