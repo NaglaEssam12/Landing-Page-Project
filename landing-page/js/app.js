@@ -22,7 +22,8 @@
 
 let sectionElements=[]; 
 let activeTest = 0;
-let i = 0;
+let idx = 0;
+let flag = false;
 let index = 0;
 let testArr = [0 , 0 , 0 , 0];    //this array to know which section have been clicked.
 let scrollArr = [0 , 0 , 0 , 0];  //this array to know which section have been scrolled to.
@@ -43,11 +44,7 @@ sectionElements.push(document.querySelector('#section4'));
 
 
 
-/**
- * End Helper Functions
- * Begin Main Functions
- * 
-*/
+
 
 // build the nav
 for(let i = 0 ; i < sectionElements.length ;i++)
@@ -60,14 +57,15 @@ for(let i = 0 ; i < sectionElements.length ;i++)
 
 //To carry All list Items that we have created.
 const listItems = document.querySelectorAll('li');
+
 // Add class 'active' to section when near top of viewport
 
 
 // Scroll to anchor ID using scrollTO event
 
 
-    
-window.addEventListener('scroll',function(){
+  
+window.addEventListener('scroll',function(event){
       for(let i = 0 ; i < sectionElements.length ; i++)
           {
               var mySection = document.querySelector('#section' + (i+1));
@@ -76,6 +74,7 @@ window.addEventListener('scroll',function(){
                 {
                     index = i;
                     listItems[i].firstChild.classList.add('your-active-class');
+                    sectionElements[i].classList.add('your-active-class');
                     scrollArr[i] = (i + 1);
 
                 }         
@@ -86,6 +85,8 @@ window.addEventListener('scroll',function(){
             if(j !== index && scrollArr[j] !== 0)
                 {
                     listItems[j].firstChild.classList.remove('your-active-class'); 
+                    sectionElements[j].classList.remove('your-active-class');
+                     sectionElements[j].removeAttribute('class');
                    scrollArr[j] = 0;
                 }
         }
@@ -93,48 +94,27 @@ window.addEventListener('scroll',function(){
 });
 
 
-
-
-/**
- * End Main Functions
- * Begin Events
- * 
-*/
-
-// Build menu 
-
-// Scroll to section on link click
-
-// Set sections as active
-
-function clickItem(item , element , index)
-{
-   
-    
-    item.addEventListener('click',function(){
-    element.classList.add('active');
-        //These lines to differeniate which section has been clicked.
-            activeTest = i;
-            testArr[index] = (i+1);
-            i++;
+  for(let i = 0 ; i < sectionElements.length ; i++){
+         listItems[i].addEventListener('click', function (event) {
+          event.preventDefault();
+             var element = sectionElements[i];
+          element.classList.add('your-active-class');
+          listItems[i].firstChild.classList.add('your-active-class');
+          sectionElements[i].scrollIntoView({behavior: "smooth"}); // to make the scrolling smooth
+          //These lines to differeniate which section has been clicked.
+          testArr[i] = idx;
+          idx++;
+           
         //This loop to know which section has been clicked before to make it not active.  
     for(let j = 0 ; j < sectionElements.length ;j++)
         {
-           // console.log(testArr);
-            if(j !== index && testArr[j] !== 0)
+            if(j !== i && testArr[j] !== 0)
                 {
-                   sectionElements[j].classList.remove('active'); 
+                   sectionElements[j].classList.remove('your-active-class'); 
                    sectionElements[j].removeAttribute('class');
+                   listItems[j].firstChild.classList.remove('your-active-class');
                 }
+            
         }
     });
-    
-    
-}
-clickItem(listItems[0],sectionElements[0],0);
-clickItem(listItems[1],sectionElements[1],1);
-clickItem(listItems[2],sectionElements[2],2);
-clickItem(listItems[3],sectionElements[3],3);
-
-
-
+      }
